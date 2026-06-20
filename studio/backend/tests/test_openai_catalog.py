@@ -15,7 +15,12 @@ import routes.inference as inf  # noqa: E402
 
 
 class _Info:
-    def __init__(self, id, display_name, model_id=None):
+    def __init__(
+        self,
+        id,
+        display_name,
+        model_id = None,
+    ):
         self.id = id
         self.display_name = display_name
         self.model_id = model_id
@@ -45,7 +50,7 @@ def test_catalog_lists_loaded_and_available(monkeypatch):
         lambda: [
             _Info("/data/models/Qwen3-Q4.gguf", "Qwen3-Q4"),  # same as loaded -> dedup
             _Info("/data/models/Llama-8B-Q8.gguf", "Llama-8B-Q8"),  # available, not loaded
-            _Info("models--org--Foo", "Foo", model_id="org/Foo"),  # hf cache repo id
+            _Info("models--org--Foo", "Foo", model_id = "org/Foo"),  # hf cache repo id
         ],
     )
 

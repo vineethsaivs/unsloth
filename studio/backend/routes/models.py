@@ -705,11 +705,7 @@ def collect_local_models(models_root: Path) -> List[LocalModelInfo]:
         local_models += _scan_hf_cache(legacy_hf)
 
     # Scan HF system default cache (may differ under env overrides).
-    if (
-        _safe_is_dir(hf_default)
-        and default_real != hf_cache_real
-        and default_real != legacy_real
-    ):
+    if _safe_is_dir(hf_default) and default_real != hf_cache_real and default_real != legacy_real:
         local_models += _scan_hf_cache(hf_default)
 
     # Scan LM Studio directories.

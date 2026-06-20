@@ -6155,7 +6155,6 @@ def _cached_local_catalog() -> list:
             from pathlib import Path as _Path
 
             from routes.models import collect_local_models
-
             _CATALOG_CACHE["models"] = collect_local_models(_Path("./models").resolve())
         except Exception as exc:
             logger.debug("model catalog scan failed: %s", exc)
