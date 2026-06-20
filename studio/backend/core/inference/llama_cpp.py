@@ -8314,10 +8314,7 @@ class LlamaCppBackend:
                             # text, matching the final streaming pass for
                             # models that put everything in reasoning.
                             # Reasoning ran for the whole stream -- report it.
-                            if (
-                                _reasoning_started_at is not None
-                                and not _reasoning_summary_emitted
-                            ):
+                            if _reasoning_started_at is not None and not _reasoning_summary_emitted:
                                 _reasoning_summary_emitted = True
                                 _reasoning_summary_ms = (
                                     time.monotonic() - _reasoning_started_at
