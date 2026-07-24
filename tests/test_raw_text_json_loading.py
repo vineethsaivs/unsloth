@@ -20,21 +20,26 @@ RAW_TEXT_PATH = Path(__file__).parents[1] / "unsloth" / "dataprep" / "raw_text.p
 
 
 def _load_raw_text():
-    sys.modules.setdefault("datasets", types.SimpleNamespace(Dataset=object))
+    sys.modules.setdefault("datasets", types.SimpleNamespace(Dataset = object))
     module = types.ModuleType("unsloth_raw_text_under_test")
-    exec(compile(RAW_TEXT_PATH.read_text(encoding="utf-8"), str(RAW_TEXT_PATH), "exec"), module.__dict__)
+    exec(
+        compile(RAW_TEXT_PATH.read_text(encoding = "utf-8"), str(RAW_TEXT_PATH), "exec"),
+        module.__dict__,
+    )
     return module
 
 
 def test_json_document_is_parsed_whole(tmp_path):
-    loader = _load_raw_text().RawTextDataLoader(tokenizer=object())
+    loader = _load_raw_text().RawTextDataLoader(tokenizer = object())
     path = tmp_path / "data.json"
-    path.write_text(json.dumps([{"text": "hello world"}, {"text": "second sample"}], indent=2), encoding="utf-8")
+    path.write_text(
+        json.dumps([{"text": "hello world"}, {"text": "second sample"}], indent = 2), encoding = "utf-8"
+    )
     assert loader._read_file_by_format(str(path), "json_lines") == "hello world\n\nsecond sample"
 
 
 def test_jsonl_is_still_parsed_line_by_line(tmp_path):
-    loader = _load_raw_text().RawTextDataLoader(tokenizer=object())
+    loader = _load_raw_text().RawTextDataLoader(tokenizer = object())
     path = tmp_path / "data.jsonl"
-    path.write_text('{"text": "a"}\n{"text": "b"}\n', encoding="utf-8")
+    path.write_text('{"text": "a"}\n{"text": "b"}\n', encoding = "utf-8")
     assert loader._read_file_by_format(str(path), "json_lines") == "a\n\nb"
