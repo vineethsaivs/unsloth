@@ -220,15 +220,28 @@ class RawTextDataLoader:
             if file_format == "plain_text" or file_format == "markdown":
                 return f.read()
             elif file_format == "json_lines":
+                content = f.read()
+                try:
+                    # A .json file is a single JSON document (commonly a list
+                    # of records); parse it whole.
+                    parsed = json.loads(content)
+                    records = parsed if isinstance(parsed, list) else [parsed]
+                except json.JSONDecodeError:
+                    # A .jsonl file is one JSON value per line.
+                    records = []
+                    for line in content.splitlines():
+                        line = line.strip()
+                        if not line:
+                            continue
+                        try:
+                            records.append(json.loads(line))
+                        except json.JSONDecodeError:
+                            continue
                 lines = []
-                for line in f:
-                    try:
-                        data = json.loads(line.strip())
-                        text = self._extract_text_from_json(data)
-                        if text:
-                            lines.append(text)
-                    except json.JSONDecodeError:
-                        continue
+                for data in records:
+                    text = self._extract_text_from_json(data)
+                    if text:
+                        lines.append(text)
                 return "\n\n".join(lines)
             elif file_format == "csv_text_column":
                 reader = csv.DictReader(f)
